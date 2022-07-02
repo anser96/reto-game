@@ -11,11 +11,14 @@ import co.com.sofka.domain.generic.DomainEvent;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class JuegoController {
@@ -47,6 +50,14 @@ public class JuegoController {
         return command.getJuegoId();
     }
 
+    @GetMapping("/puntaje")
+    public List<Puntaje> obtener() {
+        return puntajeQueryService
+                .getScoreGame()
+                .stream()
+                .sorted(Comparator.comparing(Puntaje::getTiempoRecorrido))
+                .collect(Collectors.toList());
+    }
 
     private DomainEventRepository domainEventRepository() {
         return new DomainEventRepository() {
