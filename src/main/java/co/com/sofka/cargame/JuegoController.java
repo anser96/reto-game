@@ -5,6 +5,7 @@ import co.com.sofka.business.repository.DomainEventRepository;
 import co.com.sofka.business.support.RequestCommand;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
+import co.com.sofka.cargame.infra.services.PuntajeQueryServce;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
 import co.com.sofka.cargame.usecase.model.Puntaje;
@@ -34,7 +35,7 @@ public class JuegoController {
     private InicarJuegoUseCase inicarJuegoUseCase;
 
     @Autowired
-    private PuntajeService puntajeService;
+    private PuntajeQueryServce puntajeService;
 
     @PostMapping("/crearJuego")
     public String crearJuego(@RequestBody CrearJuegoCommand command) {
@@ -57,8 +58,8 @@ public class JuegoController {
 
     @GetMapping("/puntaje")
     public List<Puntaje> obtener() {
-        return puntajeQueryService
-                .getScoreGame()
+        return puntajeService
+                .getPuntajeGame()
                 .stream()
                 .sorted(Comparator.comparing(Puntaje::getTiempoRecorrido))
                 .collect(Collectors.toList());
