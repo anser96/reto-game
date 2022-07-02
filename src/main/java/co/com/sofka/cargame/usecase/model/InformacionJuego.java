@@ -1,10 +1,12 @@
 package co.com.sofka.cargame.usecase.model;
 
 public class InformacionJuego {
+
     private String juegoId;
     private String carroId;
     private String carrilId;
     private String metros;
+
 
     public String getJuegoId() {
         return juegoId;

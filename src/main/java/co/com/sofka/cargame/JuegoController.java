@@ -7,6 +7,8 @@ import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
+import co.com.sofka.cargame.usecase.model.Puntaje;
+import co.com.sofka.cargame.usecase.services.PuntajeService;
 import co.com.sofka.domain.generic.DomainEvent;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
@@ -30,6 +32,9 @@ public class JuegoController {
     private CrearJuegoUseCase crearJuegoUseCase;
     @Autowired
     private InicarJuegoUseCase inicarJuegoUseCase;
+
+    @Autowired
+    private PuntajeService puntajeService;
 
     @PostMapping("/crearJuego")
     public String crearJuego(@RequestBody CrearJuegoCommand command) {
