@@ -36,6 +36,71 @@ public class Puntaje {
         long difference_In_Hours = (difference_In_Time / (1000 * 60 * 60)) % 24;
         return convert(difference_In_Hours)+":"+convert(difference_In_Minutes)+":"+convert(difference_In_Seconds);
     }
+    public String convert(Long aLong){
+        return String.format("%02d",aLong);
+    }
 
+    public String getJuegoId() {
+        return juegoId;
+    }
 
+    public void setJuegoId(String juegoId) {
+        this.juegoId = juegoId;
+    }
+
+    public String getCarrilId() {
+        return carrilId;
+    }
+
+    public void setCarrilId(String carrilId) {
+        this.carrilId = carrilId;
+    }
+
+    public String getCarroId() {
+        return carroId;
+    }
+
+    public void setCarroId(String carroId) {
+        this.carroId = carroId;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public String getDistanciaJuego() {
+        return distanciaJuego;
+    }
+
+    public void setDistanciaJuego(String distanciaJuego) {
+        this.distanciaJuego = distanciaJuego;
+    }
+
+    public String getTiempoRecorrido() {
+        return tiempoRecorrido;
+    }
+
+    public void setTiempoRecorrido(String tiempoRecorrido) {
+        this.tiempoRecorrido = tiempoRecorrido;
+    }
 }
