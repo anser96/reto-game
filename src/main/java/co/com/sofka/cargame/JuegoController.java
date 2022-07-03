@@ -3,14 +3,17 @@ package co.com.sofka.cargame;
 import co.com.sofka.business.generic.UseCaseHandler;
 import co.com.sofka.business.repository.DomainEventRepository;
 import co.com.sofka.business.support.RequestCommand;
+import co.com.sofka.business.support.TriggeredEvent;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
+import co.com.sofka.cargame.domain.juego.events.JuegoFinalizado;
+import co.com.sofka.cargame.domain.juego.events.PrimerLugarAsignado;
 import co.com.sofka.cargame.domain.juego.values.JuegoId;
-import co.com.sofka.cargame.infra.services.PuntajeQueryServce;
+import co.com.sofka.cargame.infra.services.PuntajeQueryService;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
+import co.com.sofka.cargame.usecase.listeners.NotificarGanadoresUseCase;
 import co.com.sofka.cargame.usecase.model.Puntaje;
-import co.com.sofka.cargame.usecase.services.PuntajeService;
 import co.com.sofka.domain.generic.DomainEvent;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
@@ -33,7 +36,11 @@ public class JuegoController {
     private InicarJuegoUseCase inicarJuegoUseCase;
 
     @Autowired
-    private PuntajeQueryServce puntajeService;
+    private PuntajeQueryService puntajeQueryServce;
+
+    @Autowired
+    private NotificarGanadoresUseCase notificarGanadoresUseCase;
+
 
     @PostMapping("/crearJuego")
     public String crearJuego(@RequestBody CrearJuegoCommand command) {
@@ -54,14 +61,15 @@ public class JuegoController {
         return command.getJuegoId();
     }
 
-    @GetMapping("/puntaje")
+    @GetMapping("/puntaje/{juegoId}")
     public List<Puntaje> obtener(@PathVariable String juegoId) {
-        return puntajeService
-                .getPuntajeGame(JuegoId.of(juegoId))
+        return puntajeQueryServce
+                .getPuntaje(JuegoId.of(juegoId))
                 .stream()
                 .sorted(Comparator.comparing(Puntaje::getTiempoRecorrido))
                 .collect(Collectors.toList());
     }
+
 
     private DomainEventRepository domainEventRepository() {
         return new DomainEventRepository() {

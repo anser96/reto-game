@@ -18,14 +18,16 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class PuntajeQueryServce implements PuntajeService {
+public class PuntajeQueryService implements PuntajeService {
+
     private final MongoTemplate mongoTemplate;
     private final InformacionJuegoService idQueryService;
     private final CarroService carroQueryService;
     private final CarroDesplazadoService carroDesplazadoService;
 
     @Autowired
-    public PuntajeQueryServce(MongoTemplate mongoTemplate, InformacionJuegoQueryService idQueryService, CarroQueryService carroQueryService, CarroDesplazadoService carroDesplazadoService) {
+    public PuntajeQueryService(MongoTemplate mongoTemplate, InformacionJuegoQueryService idQueryService,
+                               CarroQueryService carroQueryService, CarroDesplazadoService carroDesplazadoService) {
         this.mongoTemplate = mongoTemplate;
         this.idQueryService = idQueryService;
         this.carroQueryService = carroQueryService;
@@ -33,8 +35,8 @@ public class PuntajeQueryServce implements PuntajeService {
     }
 
     @Override
-    public List<Puntaje> getPuntajeGame(JuegoId juegoId) {
-        List<Puntaje> puntajes = new ArrayList<>();
+    public List<Puntaje> getPuntaje(JuegoId juegoId) {
+        List<Puntaje> scores = new ArrayList<>();
         idQueryService
                 .obtenerInformacionJuego(juegoId)
                 .forEach(id -> {
@@ -55,10 +57,11 @@ public class PuntajeQueryServce implements PuntajeService {
                             .getWhen();
 
                     var nombre = carroQueryService.getNombreConductorID(carroId);
-                    var puntaje = new Puntaje(id.getJuegoId(),id.getCarrilId(),id.getCarroId(),nombre,fechaInicio,fechaFin, id.getMetros());
-                    puntajes.add(puntaje);
+                    var score = new Puntaje(id.getJuegoId(),id.getCarrilId(),id.getCarroId(),nombre,fechaInicio,fechaFin, id.getMetros());
+                    scores.add(score);
                 });
 
-        return puntajes;
+        return scores;
     }
+
 }

@@ -17,6 +17,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 public class InformacionJuegoQueryService implements InformacionJuegoService {
+
     private final MongoTemplate mongoTemplate;
 
     @Autowired

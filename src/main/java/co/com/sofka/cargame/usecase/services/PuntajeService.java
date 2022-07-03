@@ -6,6 +6,6 @@ import co.com.sofka.cargame.usecase.model.Puntaje;
 import java.util.List;
 
 public interface PuntajeService {
-    List<Puntaje> getPuntajeGame(JuegoId juegoId);
+    List<Puntaje> getPuntaje(JuegoId juegoId);
 
 }
