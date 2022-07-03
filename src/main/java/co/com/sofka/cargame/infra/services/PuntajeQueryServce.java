@@ -7,6 +7,7 @@ import co.com.sofka.cargame.usecase.model.Puntaje;
 import co.com.sofka.cargame.usecase.model.TiempoDesplazamiento;
 import co.com.sofka.cargame.usecase.services.CarroDesplazadoService;
 import co.com.sofka.cargame.usecase.services.CarroService;
+import co.com.sofka.cargame.usecase.services.InformacionJuegoService;
 import co.com.sofka.cargame.usecase.services.PuntajeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,7 +20,7 @@ import java.util.List;
 @Service
 public class PuntajeQueryServce implements PuntajeService {
     private final MongoTemplate mongoTemplate;
-    private final InformacionJuegoQueryService idQueryService;
+    private final InformacionJuegoService idQueryService;
     private final CarroService carroQueryService;
     private final CarroDesplazadoService carroDesplazadoService;
 
@@ -32,13 +33,12 @@ public class PuntajeQueryServce implements PuntajeService {
     }
 
     @Override
-    public List<Puntaje> getPuntajeGame() {
+    public List<Puntaje> getPuntajeGame(JuegoId juegoId) {
         List<Puntaje> puntajes = new ArrayList<>();
         idQueryService
-                .obtenerInformacionJuego()
+                .obtenerInformacionJuego(juegoId)
                 .forEach(id -> {
                     var carroId = CarroId.of(id.getCarroId());
-                    var juegoId = JuegoId.of(id.getJuegoId());
                     var carrilId = CarrilId.of(id.getCarrilId());
                     var fechaInicio = carroDesplazadoService
                             .obtenerTiempoDesplazamiento(carrilId)

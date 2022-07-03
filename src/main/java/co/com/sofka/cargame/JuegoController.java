@@ -5,6 +5,7 @@ import co.com.sofka.business.repository.DomainEventRepository;
 import co.com.sofka.business.support.RequestCommand;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
+import co.com.sofka.cargame.domain.juego.values.JuegoId;
 import co.com.sofka.cargame.infra.services.PuntajeQueryServce;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
@@ -14,10 +15,7 @@ import co.com.sofka.domain.generic.DomainEvent;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -57,9 +55,9 @@ public class JuegoController {
     }
 
     @GetMapping("/puntaje")
-    public List<Puntaje> obtener() {
+    public List<Puntaje> obtener(@PathVariable String juegoId) {
         return puntajeService
-                .getPuntajeGame()
+                .getPuntajeGame(JuegoId.of(juegoId))
                 .stream()
                 .sorted(Comparator.comparing(Puntaje::getTiempoRecorrido))
                 .collect(Collectors.toList());

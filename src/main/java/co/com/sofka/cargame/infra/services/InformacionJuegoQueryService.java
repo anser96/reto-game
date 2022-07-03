@@ -1,5 +1,6 @@
 package co.com.sofka.cargame.infra.services;
 
+import co.com.sofka.cargame.domain.juego.values.JuegoId;
 import co.com.sofka.cargame.usecase.model.InformacionJuego;
 import co.com.sofka.cargame.usecase.services.InformacionJuegoService;
 import com.google.gson.Gson;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 @Service
 public class InformacionJuegoQueryService implements InformacionJuegoService {
     private final MongoTemplate mongoTemplate;
@@ -22,14 +25,16 @@ public class InformacionJuegoQueryService implements InformacionJuegoService {
     }
 
     @Override
-    public List<InformacionJuego> obtenerInformacionJuego() {
+    public List<InformacionJuego> obtenerInformacionJuego(JuegoId juegoId) {
         var lookup = LookupOperation.newLookup()
                 .from("carril.CarroAgregadoACarrail")
                 .localField("aggregateRootId")
                 .foreignField("aggregateRootId")
                 .as("carroAgregadoACarrail");
 
-        var aggregation = Aggregation.newAggregation(lookup);
+        var aggregation = Aggregation.newAggregation(
+                lookup,
+                Aggregation.match(where("juegoId.uuid").is(juegoId.value())));
 
         var tempo = mongoTemplate.aggregate(aggregation, "carril.CarrilCreado", String.class)
                 .getMappedResults().stream().collect(Collectors.toList());
@@ -38,12 +43,12 @@ public class InformacionJuegoQueryService implements InformacionJuegoService {
                 .getMappedResults().stream()
                 .map(body -> new Gson().fromJson(body,IdRecord.class))
                 .map(idRecord -> {
-                    var informacionDeJuego = new InformacionJuego();
-                    informacionDeJuego.setCarrilId(idRecord.getAggregateRootId());
-                    informacionDeJuego.setCarroId(idRecord.getCarroAgregadoACarrail().get(0).getCarroId().getUuid());
-                    informacionDeJuego.setJuegoId(idRecord.getJuegoId().getUuid());
-                    informacionDeJuego.setMetros(idRecord.getMetros());
-                    return informacionDeJuego;
+                    var informacionJuego = new InformacionJuego();
+                    informacionJuego.setCarrilId(idRecord.getAggregateRootId());
+                    informacionJuego.setCarroId(idRecord.getCarroAgregadoACarrail().get(0).getCarroId().getUuid());
+                    informacionJuego.setJuegoId(idRecord.getJuegoId().getUuid());
+                    informacionJuego.setMetros(idRecord.getMetros());
+                    return informacionJuego;
                 })
                 .collect(Collectors.toList());
     }
